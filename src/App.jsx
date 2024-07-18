@@ -8,7 +8,7 @@ import ImageGallery from './components/ImageGallery/ImageGallery';
 import Loader from './components/Loader/Loader';
 import ErrorMessage from './components/ErrorMessage/ErrorMessage'
 import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn';
-// import ImageModal from './components/ImageModal/ImageModal';
+import ImageModal from './components/ImageModal/ImageModal';
 
 
 const App = () => {
@@ -18,6 +18,10 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [gallery, setGallery] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
+  
+  const [modalIsOpen, setIsOpen] = useState(false);
+	const [modalImage, setModalImage] = useState('');
+	const [altDescription, setAltDescription] = useState('');
   
 
   const ref = useRef();
@@ -64,6 +68,20 @@ const handleLoadMore = () => {
 
 const isActive = useMemo(() => page === totalPages, [page, totalPages]);
   
+const openModal = () => {
+  setIsOpen(true);
+};
+
+const closeModal = () => {
+  setIsOpen(false);
+};
+
+const updateModalStateData = (src, alt) => {
+  setModalImage(src);
+  setAltDescription(alt);
+};
+
+
 return (
   <div ref={ref}>
     <SearchBar onSubmit={handleQuery} />
@@ -71,20 +89,20 @@ return (
         
       <ImageGallery
         gallery={gallery}
-        // openModal={openModal}
-        // updateModalStateData={updateModalStateData}
+        openModal={openModal}
+        updateModalStateData={updateModalStateData}
       />
     )}
     
     {gallery.length > 0 && !isLoading && !isError && (
       <LoadMoreBtn handleLoadMore={handleLoadMore} isActive={isActive} />
     )}
-    {/* <ImageModal
+    <ImageModal
       modalIsOpen={modalIsOpen}
       closeModal={closeModal}
       src={modalImage}
       alt={altDescription}
-    /> */}
+    />
     {isLoading && <Loader />}
     {isError && <ErrorMessage />}
     <Toaster position='top-right' reverseOrder={true} />
